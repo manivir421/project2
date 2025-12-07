@@ -1,6 +1,6 @@
 from django.test import TestCase
-from com.shop.models import Product, Order
-from com.shop.recommendation_system import recommend_related_products
+from store.models import Product, Order
+from store.recommendation_system import recommend_related_products
 
 class TestRecommendationSystem(TestCase):
 
