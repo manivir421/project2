@@ -1,0 +1,78 @@
+/*<!---
+#comp 3450 <Ashima,ripan>--> */
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+
+<h1 style="color: #305bab;font-size: 50px;margin-left: 590px;font-family: cursive;margin-bottom: 50px;">3D TRY ONS</h1>
+<button style="margin-left: 640px;margin-bottom: 20px;" id="captureButton">Capture Image of your room</button><br>
+<h5>Take image and try the underlined features</h5>
+
+<div id="room-container">
+    <img style="float: left;margin-right: 50px;margin-bottom: 100px;" width="450px" src="{% static 'images/vr.webp' %}" alt="">
+    <h3 style="margin: 10px;font-size: 15px;margin-bottom: 30px;">Here you can try any furniture in your own place</h3>
+
+    <img class="furniture-image" style="margin-left: 40px;" width="190px" src="{% static 'images/wooden-furniture-design3.webp' %}" alt="">
+    <img class="furniture-image" style="margin-left: 40px;" width="190px" src="{% static 'images/designer-bedroom-furniture.jpg' %}" alt="">
+    <img class="furniture-image" style="margin-left: 40px;" width="190px" src="{% static 'images/pexels-eric-mufasa-1350789.jpg' %}" alt="">
+    <img class="furniture-image" style="margin-left: 40px;" width="190px" src="{% static 'images/fr.jpg' %}" alt="">
+
+   
+</div><br><br><br>
+<div style="margin-bottom: 150px;" class="container">
+    <h3 style="margin-top: 100px;color: blue;margin-bottom: 20px;">Sofas</h3>
+    <div id="room-container">
+        
+    
+        <img class="furniture-image" style="margin-left: 40px;" width="150px" src="{% static 'images/green.png' %}" alt="">
+        <img class="furniture-image" style="margin-left: 40px;" width="150px" src="{% static 'images/pink.png' %}" alt="">
+        <img class="furniture-image" style="margin-left: 40px;" width="150px" src="{% static 'images/black.png' %}" alt="">
+        <img class="furniture-image" style="margin-left: 40px;" width="150px" src="{% static 'images/sky.png' %}" alt="">
+        <img class="furniture-image" style="margin-left: 40px;" width="150px" src="{% static 'images/mul.png' %}" alt="">
+        <img class="furniture-image" style="margin-left: 40px;" width="150px" src="{% static 'images/bl .png' %}" alt="">
+        
+       
+       
+    </div>
+</div>
+<div class="container">
+    <h3 style="margin-top: 100px;color: blue;margin-bottom: 20px;">Tables</h3>
+    <div id="room-container">
+        
+    
+        <img class="furniture-image" style="margin-left: 40px;" width="150px" src="{% static 'images/table12.png' %}" alt="">
+        <img class="furniture-image" style="margin-left: 40px;" width="150px" src="{% static 'images/tb1.png' %}" alt="">
+        <img class="furniture-image" style="margin-left: 40px;" width="150px" src="{% static 'images/tb3.png' %}" alt="">
+        <img class="furniture-image" style="margin-left: 40px;" width="150px" src="{% static 'images/tb5.png' %}" alt="">
+        <img class="furniture-image" style="margin-left: 40px;" width="150px" src="{% static 'images/tb4.png' %}" alt="">
+        <img class="furniture-image" style="margin-left: 40px;" width="150px" src="{% static 'images/tb6.png' %}" alt="">
+        
+       
+       
+    </div>
+</div>
+
+<script>
+    let selectedImage = null;
+
+    document.querySelectorAll('.furniture-image').forEach(function (image) {
+        image.addEventListener('click', function () {
+            // Check if an image is already selected
+            if (selectedImage) {
+                // Deselect the previously selected image
+                selectedImage.style.border = 'none';
+                selectedImage.style.transform = 'scale(1)'; // Reset the zoom
+            }
+
+            // Select the clicked image
+            this.style.border = '2px solid #3498db';
+            this.style.transform = 'scale(1.2)'; // Zoom effect
+            selectedImage = this;
+        });
+    });
+</script>
+
+
+
+   
+{% endblock %}

@@ -1,0 +1,184 @@
+/*<!---
+#comp 3450 <Ashima,ripan>--> */
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jU" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-pzjw8+uUg9Iv6/6/Zj+ZBE6LIXsOuNU70mp6f15v7Ld6gs7eBVaG2Dx3I6XmYIt3" crossorigin="anonymous"></script>
+
+<style>
+    .add-btn {
+        background-color: palevioletred;
+        color: white;
+    }
+
+    .view-btn {
+        background-color: blue;
+        color: white;
+    }
+    .box-element.product {
+        margin-bottom: 50px;
+        padding: 40px;
+        background-color: #d6cf9a;
+    }
+    
+</style>
+<nav class="navbar navbar-expand-lg navbar-dark bg-#305bab">
+    <div class="container-fluid">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link " aria-current="page" href="{% url 'help' %}">Help Center</a>
+              </li>
+          <li class="nav-item">
+            <a class="nav-link " aria-current="page" href="{% url 'return.html' %}">Return</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'exchange' %}">Exchange</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'transaction_history' %}">Transaction History</a>
+          </li>
+          <a class="nav-link" href="{% url 'virtual_room' %}">3D Try On</a>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <br><br>
+<div class="row">
+    <div class="col-lg-3 order-lg-first col-md-12 order-md-last">
+        <div class="side-sidebar-wrap">
+            <h4 class="sidebar-title">Top Categories</h4>
+            <div class="sidebar-widget-category">
+                <ul>
+                    {% for category in categories %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{category.get_absolute_url}}">{{category.name}}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="sidebar-widget mt-8">
+            <h4 class="sidebar-title">Price Filter</h4>
+            <div class="price-filter">
+                <div class="price-slider-amount"></div>
+                <div class="slider-range"></div>
+            </div>
+        </div>
+
+        <form id="priceFilterForm">
+            
+            <input type="range" id="price" name="price" min="{{ min_price }}" max="{{ max_price }}" class="form-range">
+            <span id="priceValue"></span>
+            <!-- Add other form elements or submit button as needed -->
+        </form><br>
+        <form id="colorFilterForm">
+            <label style="font-size: 30px;" for="color">Color</label><br><br>
+        
+            <option value="">All Colors</option>
+        
+            <div style="display: flex; gap: 10px;">
+                <option value="red" style="background-color: red; color: white; border-radius: 50%; width: 20px; height: 20px;"></option>
+                <option value="blue" style="background-color: blue; color: white; border-radius: 50%; width: 20px; height: 20px;"></option>
+                <option value="green" style="background-color: green; color: white; border-radius: 50%; width: 20px; height: 20px;"></option>
+                <!-- Add more color options -->
+                <option value="yellow" style="background-color: yellow; color: black; border-radius: 50%; width: 20px; height: 20px;"></option>
+                <option value="purple" style="background-color: purple; color: white; border-radius: 50%; width: 20px; height: 20px;"></option>
+                <option value="orange" style="background-color: orange; color: white; border-radius: 50%; width: 20px; height: 20px;"></option>
+                <!-- Add more color options as needed -->
+            </div>
+        </form>
+        
+    </div>
+    
+    <div class="col-lg-9">
+        <div class="row">
+            {% for product in products %}
+                <div class="col-lg-4">
+                    <!-- Display product details as needed -->
+                    <a href="{{ product.get_absolute_url }}"><img class="thumbnail" src="{{ product.imageURL }}"></a>
+                    <div class="box-element product">
+                        <a href="{{ product.get_absolute_url }}"><h6><strong>{{ product.title }}</strong></h6></a>
+                        <hr>
+                        {% if product.quantity <= 0 %}
+                            <h5>Out of stock</h5>
+                        {% else %}
+                            <button style="background-color: #305bab;" data-product="{{ product.id }}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
+                        {% endif %}
+                        <a style="color:#305bab;background-color: white;" class="btn btn-outline-success view-btn" href="{{ product.get_absolute_url }}">View</a>
+                        <h4 style="float: right">&#36; {{ product.price }}</h4>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Add product to cart
+        $('.update-cart').on('click', function () {
+            var productId = $(this).data('product');
+            var action = $(this).data('action');
+            $.ajax({
+                url: "{% url 'update_item' %}",
+                method: "POST",
+                data: { 'productId': productId, 'action': action },
+                success: function (response) {
+                    // Update the cart icon or total as needed
+                    console.log(response);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css" />
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
+<!-- your_template.html -->
+
+
+
+<script>
+    const priceInput = document.getElementById('price');
+    const priceValue = document.getElementById('priceValue');
+    const productList = document.getElementById('productList');
+    
+    // Initial product list display
+    updateProductList();
+
+    // Event listener for the price input change
+    priceInput.addEventListener('input', function () {
+        updateProductList();
+    });
+
+    function updateProductList() {
+        // Get the selected price from the range input
+        const selectedPrice = priceInput.value;
+
+        // Display the selected price value
+        priceValue.textContent = `Selected Price: $${selectedPrice}`;
+
+        // Make an AJAX request to your Django view to get filtered products
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', `/filter-products/?price=${selectedPrice}`, true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // Update the product list with the response
+                productList.innerHTML = xhr.responseText;
+            }
+        };
+        xhr.send();
+    }
+</script>
+
+{% endblock %}

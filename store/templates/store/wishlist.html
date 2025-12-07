@@ -1,0 +1,41 @@
+/*<!---
+#comp 3450 <Ashima,ripan>--> */
+{% extends 'store/main.html' %}
+{% load static %}
+
+{% block content %}
+
+<main class="pt-2">
+    <div class="container" style="max-width: 1000px">
+        <div class="row g-3">
+           
+            <div class="col-12 d-flex justify-content-between"></div>
+
+            <div class="col-md-5 ps-3 col-lg-5 order-md-last p-0 order-1">
+                <div class="d-grid gap-2 mt-5 pt-3">
+                    <h1>Your Wishlist</h1>
+                    {% if wishlist_items %}
+                    <ul>
+                        {% for item in wishlist_items %}
+                            <li>
+                              
+                                <a  style="text-decoration: none; color: red;float: left;" href="{{ item.product.get_absolute_url }}">{{ item.product.title }}</a>
+                                <img  src="{{ item.product.imageURL }}" alt="{{ item.product.title }}" style="max-width: 100px;">
+                                <a style="text-decoration: none; color: rgb(90, 33, 43);" href="{% url 'remove_from_wishlist' wishlist_item_id=item.id %}">Remove from Wishlist</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                        <p>Your wishlist is empty.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-7 col-lg-7 p-0">
+                <!-- Additional content, if needed -->
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

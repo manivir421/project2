@@ -1,0 +1,147 @@
+/*<!---
+#comp 3450 <Ashima,ripan>--> */
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Talking Chatbot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    .container {
+      width: 400px;
+      margin: 50px auto;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .chat-box {
+      height: 300px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+    .message {
+      margin-bottom: 10px;
+    }
+    .message.user {
+      text-align: right;
+      color: blue;
+    }
+    .message.bot {
+      text-align: left;
+      color: green;
+    }
+    button {
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:disabled {
+      background-color: #ccc;
+    }
+    #mic-btn {
+      background-color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Talking Chatbot</h2>
+    <div class="chat-box" id="chat-box"></div>
+    <textarea id="user-input" placeholder="Type your message..." rows="2" style="width: 100%;"></textarea>
+    <button id="send-btn" onclick="sendMessage()">Send</button>
+    <button id="mic-btn" onclick="startListening()">🎤 Speak</button>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById("chat-box");
+    const userInput = document.getElementById("user-input");
+    const sendBtn = document.getElementById("send-btn");
+    const micBtn = document.getElementById("mic-btn");
+
+    function displayMessage(message, sender) {
+      const msgDiv = document.createElement("div");
+      msgDiv.className = "message " + sender;
+      msgDiv.textContent = message;
+      chatBox.appendChild(msgDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function sendMessage() {
+      const message = userInput.value.trim();
+      if (message === "") return;
+
+      displayMessage("You: " + message, "user");
+      userInput.value = "";  // Clear the input field
+
+      fetch("/voice_chatbot/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ text: message })
+      })
+      .then(response => response.json())
+      .then(data => {
+        const botResponse = data.response;
+        displayMessage("Bot: " + botResponse, "bot");
+        speak(botResponse);  // Bot speaks the response
+      })
+      .catch(err => {
+        console.error("Error:", err);
+        displayMessage("Bot: Sorry, something went wrong.", "bot");
+      });
+    }
+
+    // Function to make the bot speak
+    function speak(text) {
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = "en-US";
+        speechSynthesis.speak(utterance);
+      } else {
+        console.log("Speech synthesis not supported.");
+      }
+    }
+
+    // Voice recognition for user input
+    function startListening() {
+      if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
+        alert("Your browser doesn't support speech recognition.");
+        return;
+      }
+
+      let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'en-US';
+      recognition.start();
+
+      recognition.onresult = function(event) {
+        let spokenText = event.results[0][0].transcript;
+        userInput.value = spokenText;
+        sendMessage();  // Auto-send after speaking
+      };
+
+      recognition.onerror = function(event) {
+        console.error("Speech recognition error:", event);
+        displayMessage("Bot: Sorry, I couldn't hear you.", "bot");
+      };
+    }
+  </script>
+</body>
+</html>

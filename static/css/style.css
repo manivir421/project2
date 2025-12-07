@@ -1,0 +1,20 @@
+/* Light Mode (Default) */
+/*<!---
+#comp 3450 <Ashima,ripan>--> */
+body.light-mode {
+    background-color: white;
+    color: black;
+}
+
+/* Dark Mode */
+body.dark-mode {
+    background-color: black;
+    color: white;
+}
+
+/* High Contrast Mode */
+body.high-contrast {
+    
+    color: black;
+    font-weight: bold;
+}

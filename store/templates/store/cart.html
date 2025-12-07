@@ -1,0 +1,107 @@
+/*<!---
+#comp 3450 <Ashima,ripan>--> */
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+
+<div class="row" style="background-color: rgb(203, 203, 58);">
+    <div class="col-lg-12">
+        <div class="box-element">
+            <a class="btn btn-outline-dark" href="{% url 'store' %}">&#x2190; Continue Shopping</a>
+            <br>
+            <br>
+            <form method="get" action="{% url 'cart' %}">
+                {% csrf_token %}
+                <label for="coupon_code">Coupon Code:</label>
+                <input type="text" name="coupon_code" id="coupon_code">
+                <button style="background-color: pink;" type="submit">Apply Coupon</button>
+            </form>
+            <br>
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <table class="table">
+                <tr>
+                    <th><h5>Items: <strong>{{ order.get_cart_items }}</strong></h5></th>
+                    <th><h5>Total: <strong>&#36;{{ order.get_cart_total }}</strong></h5></th>
+                    <th>
+                        <a style="float:right; margin:5px;" class="btn btn-success" href="{% url 'checkout' %}">Checkout</a>
+                    </th>
+                </tr>
+            </table>
+        </div>
+
+        <br>
+        <div class="box-element">
+            <div class="cart-row">
+                <div style="flex:2"></div>
+                <div style="flex:2"><strong>Item</strong></div>
+                <div style="flex:1"><strong>Price</strong></div>
+                <div style="flex:1"><strong>Quantity</strong></div>
+                <div style="flex:1"><strong>Total</strong></div>
+            </div>
+
+            {% for item in items %}
+            <div class="cart-row">
+                <div style="flex:2"><img class="row-image" src="{{ item.product.imageURL }}"></div>
+                <div style="flex:2"><p>{{ item.product.title }}</p></div>
+                <div style="flex:1"><p>&#36;{{ item.product.price }}</p></div>
+                <div style="flex:1">
+                    <p class="quantity">{{ item.quantity }}</p>
+                    <div class="quantity">
+                        <img data-product="{{ item.product.id }}" data-action="add" class="chg-quantity update-cart" src="{% static 'images/arrow-up.png' %}">
+                        <img data-product="{{ item.product.id }}" data-action="remove" class="chg-quantity update-cart" src="{% static 'images/arrow-down.png' %}">
+                    </div>
+                </div>
+                <div style="flex:1">&#36;{{ item.get_total }}</p></div>
+            </div>
+            {% endfor %}
+
+            {% if order.coupon %}
+            <div class="cart-row">
+                <div style="flex:2"></div>
+                <div style="flex:2"><strong>Coupon: {{ order.coupon.code }}</strong></div>
+                <div style="flex:1"><strong>Discount: &#36;{{ order.coupon.discount }}</strong></div>
+                <div style="flex:1"></div>
+                <div style="flex:1">
+                    <strong>Total After Discount: &#36;{{ order.get_cart_total_after_discount }}</strong>
+                    {% with discount_amount=order.coupon.discount|floatformat:-2 %}
+                        {% with original_total=order.get_cart_total|floatformat:-2 %}
+                            {% with discounted_total=original_total|floatformat:-2|add:discount_amount|floatformat:-2 %}
+                                <p> &#36;{{ discounted_total }}</p>
+                            {% endwith %}
+                        {% endwith %}
+                    {% endwith %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Button to trigger TTS -->
+<button onclick="readText()">Read All Text</button>
+
+<script>
+    function readText() {
+        // Get all the text content of the page (you can also target specific elements if needed)
+        const textToRead = document.body.innerText;
+
+        // Create a new SpeechSynthesisUtterance object
+        const speech = new SpeechSynthesisUtterance(textToRead);
+
+        // Set the language (optional, default is English)
+        speech.lang = 'en-US'; // Change to desired language if needed
+        speech.rate = 1; // Speech rate (normal speed)
+        speech.pitch = 1; // Pitch of the speech
+
+        // Use the speech synthesis API to speak the text
+        window.speechSynthesis.speak(speech);
+    }
+</script>
+
+{% endblock %}

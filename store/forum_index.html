@@ -1,0 +1,17 @@
+/*<!---
+#comp 3450 <Ashima,ripan>--> */
+   forum/templates/forum/forum_index.html -->
+{% extends 'main.html' %}
+
+{% block content %}
+  <h1>Welcome to the Forum!</h1>
+  
+  <ul>
+    {% for topic in topics %}
+      <li>
+        <a href="{% url 'topic_posts' topic.id %}">{{ topic.subject }}</a>
+        by {{ topic.starter.username }} on {{ topic.created_at }}
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

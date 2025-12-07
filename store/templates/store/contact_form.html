@@ -1,0 +1,11 @@
+/*<!---
+#comp 3450 <Ashima,ripan>--> */
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+  <form method="post" action="{% url 'contact' %}">
+    {% csrf_token %}
+    <textarea name="message" id="" cols="30" rows="10" placeholder="Message"></textarea>
+    <input type="submit">
+  </form>
+{% endblock %}

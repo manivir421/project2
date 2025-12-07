@@ -1,0 +1,119 @@
+
+/*<!---
+#comp 3450 <Ashima,ripan>--> */{% extends 'store/main.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    body {
+    background-color: #ffffff !important; /* White background or your desired color */
+}
+</style>
+
+
+
+<main class="pt-2">
+    <div class="container" style="max-width: 1000px">
+        <div class="row g-3">
+           
+            <div class="col-12 d-flex justify-content-between"></div>
+
+            <div class="col-md-5 ps-3 col-lg-5 order-md-last p-0 order-1">
+                <div class="d-grid gap-2 mt-5 pt-3">
+                    <div>{{product.title}}</div>
+                    <div class="d-flex d-flex-inline justify-content-between">
+                        <div>
+                            <p class="text-muted">{{product.description}}</p>
+                            <span class="h3">$ {{product.price}}</span>
+                            <p class="text-muted">includes tax</p>
+                        </div>
+                        
+                    </div>
+                    <hr />
+                    <form action="{% url 'add_to_wishlist' product_id=product.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-primary">Add to Wishlist<i style="color: red;margin: 4px;" class="fa fa-heart"></i></button>
+                    </form>
+                    
+                    <!-- Add to Cart button can be here as well -->
+
+                </div>
+            </div>
+
+            <div class="col-md-7 col-lg-7 p-0">
+                <div class="card mb-3 border-0">
+                    <div class="row g-0">
+                        <div class="col-md-12">
+                            <div class="card-body p-1">
+                                <h1 class="mb-0 h2 pe-4 pb-4">{{product.category}}</h1>
+                                <div class="bg-light">
+                                    <img
+                                    class="img-fluid mx-auto d-block"
+                                    alt="Responsive image"
+                                    src="{{product.imageURL}}"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<br>
+                <!-- Product Reviews Section -->
+               <div class="row">
+                <div class="col-md-9">
+                    
+                    <form action="{% url 'submit_review' product.id %}" method="POST">
+                        {% csrf_token %}
+                        <h5>Write your Review</h5>
+                        <div>
+                            <!--rating stars-->
+                            <label for="">How do you rate this product..?</label>
+                            <br>
+                            <div class="rate">
+                                <input type="radio" name="rating" id="rating10" value="5" required/><label for="rating10" title="5"></label>
+                                <input type="radio" name="rating" id="rating9" value="4.5" required/><label for="rating9" title="4.5" class="half"></label>
+                                <input type="radio" name="rating" id="rating8" value="4" required/><label for="rating8" title="4"></label>
+                                <input type="radio" name="rating" id="rating7" value="3.5" required/><label for="rating7" title="3.5" class="half"></label>
+                                <input type="radio" name="rating" id="rating6" value="3" required/><label for="rating6" title="3"></label>
+                                <input type="radio" name="rating" id="rating5" value="2.5" required/><label for="rating5" title="2.5" class="half"></label>
+                                <input type="radio" name="rating" id="rating4" value="2" required/><label for="rating4" title="2"></label>
+                                <input type="radio" name="rating" id="rating3" value="1.5" required/><label for="rating3" title="1.5" class="half"></label>
+                                <input type="radio" name="rating" id="rating2" value="1" required/><label for="rating2" title="1"></label>
+                                <input type="radio" name="rating" id="rating1" value="0.1" required/><label for="rating1" title="0.5" class="half"></label>
+                               
+                            </div><br>
+                            Review Title:
+                            <input type="text" class = "form-control" name="subject" >
+                            <br>Review:
+                            <textarea name="review"  rows="4" class = "form-control"></textarea>
+                            <br><input type="submit" value="Submit Review" class="btn btn-primary"><br><br>
+                            <header class ="section-heading">
+                                <h3>
+                                    Customer Reviews
+                                </h3>
+                               </header>
+                               
+                               {% if customer_info %}
+                               <p>Review by: {{ customer_info.username }}</p>
+                           {% endif %}
+                           
+                           {% for review in product_reviews %}
+                               <p>Rating: {{ review.rating }}</p>
+                               <p>{{ review.review }}</p>
+                               <!-- Add other review details as needed -->
+                           {% endfor %}
+                        </div>
+                    </form>
+                </div>
+               </div>
+
+                <!-- Add Review Form -->
+                
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+{% endblock %}

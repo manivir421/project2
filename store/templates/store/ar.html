@@ -1,0 +1,131 @@
+/*<!---
+#comp 3450 <Ashima,ripan>--> */
+<!--<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR with Custom Marker</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <!-- Include AR.js for Augmented Reality features --
+    <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/AR.js/aframe/build/aframe-ar.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden;">
+    <!-- A-Frame AR scene --
+    <a-scene embedded arjs>
+        
+        <!-- Use a custom pattern marker --
+        <a-marker type="pattern" url="/static/models/pattern-marker.patt">
+            <!-- 3D model --
+            <a-entity 
+                gltf-model="url(/static/models/2011_mosler_super_gt.glb)" 
+                scale="2 2 2" 
+                position="0 0 0">
+            </a-entity>
+        </a-marker>
+      
+        <!-- Camera to view the AR content --
+        <a-camera></a-camera>
+
+    </a-scene>
+</body>
+</html>
+-->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>TrendHive</title>
+  <style>
+    body {
+      text-align: center;
+      margin-top: 50px;
+      font-family: Arial, sans-serif;
+    }
+    h1 {
+      font-style: italic;
+      font-weight: bold;
+      font-size: 2em;
+    }
+    p {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+    }
+    #camera-container {
+      display: none;
+      margin-top: 20px;
+    }
+    #video {
+      border: 1px solid #ccc;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 1.1em;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome TO TrendHive</h1>
+  <p>A marketplace buzzing with the latest trends!</p>
+  
+  <button id="login-btn">Login</button>
+
+  <div id="camera-container">
+    <video id="video" width="640" height="480" autoplay></video>
+    <br>
+    <button id="capture">Capture &amp; Verify</button>
+    <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const loginBtn = document.getElementById("login-btn");
+    const cameraContainer = document.getElementById("camera-container");
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+    const context = canvas.getContext("2d");
+    const resultDiv = document.getElementById("result");
+
+    // Show camera on clicking the Login button.
+    loginBtn.addEventListener("click", () => {
+      loginBtn.style.display = "none";
+      cameraContainer.style.display = "block";
+      
+      // Request webcam access.
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => video.srcObject = stream)
+        .catch(err => {
+          console.error("Error accessing webcam:", err);
+          resultDiv.innerText = "Unable to access camera.";
+        });
+    });
+
+    // Capture a frame and send it for face verification.
+    document.getElementById("capture").addEventListener("click", () => {
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imageData = canvas.toDataURL("image/jpeg");
+
+      fetch("{% url 'verify_face' %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({ image: imageData })
+      })
+      .then(response => response.json())
+      .then(data => {
+        resultDiv.innerText = data.message;
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        resultDiv.innerText = "An error occurred during verification.";
+      });
+    });
+  </script>
+</body>
+</html>

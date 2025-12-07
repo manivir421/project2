@@ -1,0 +1,136 @@
+/*<!---
+#comp 3450 <Ashima,ripan>--> */
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+<style>
+
+
+.container {
+text-align: center;
+background-color: #add8e6; /* Light blue background color */
+padding: 20px;
+border-radius: 8px;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+width: 400px; /* Increased width */
+}
+
+h1 {
+color: #e74c3c; /* Red color for the title */
+}
+
+
+label {
+margin-bottom: 5px;
+}
+
+input, select, button {
+margin-bottom: 10px;
+padding: 8px;
+border: 1px solid #ccc;
+border-radius: 4px;
+/* Make inputs and button full width */
+}
+
+button {
+
+color: #fff;
+cursor: pointer;
+}
+
+button:hover {
+background-color: #45a049;
+}
+
+#exchangeMessage {
+font-weight: bold;
+color: #e74c3c;
+}
+
+</style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-#305bab">
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link " aria-current="page" href="{% url 'help' %}">Help Center</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link " aria-current="page" href="{% url 'return.html' %}">Return</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'exchange' %}">Exchange</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'transaction_history' %}">Transaction History</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+<div class="container">
+<h1>Exchange Items</h1>
+
+<form id="exchangeForm" enctype="multipart/form-data">
+    <label style="width: 100%; " for="itemName">Item Name:</label>
+    <input type="text" id="itemName" name="itemName" required>
+
+    <label style="width: 100%; " for="quantity">Quantity:</label>
+    <input type="number" id="quantity" name="quantity" min="1" required>
+
+    <label style="width: 100%; " for="reason">Reason for Exchange:</label>
+    <select id="reason" name="reason" required>
+        <option value="" disabled selected>Select a reason</option>
+        <option value="wrongSize">Wrong Size</option>
+        <option value="defectiveItem">Defective Item</option>
+        <option value="changeColor">Change Color</option>
+        <!-- Add more options as needed -->
+    </select>
+
+    <label style="width: 100%; " for="exchangeTime">Select Exchange Time:</label>
+    <input type="datetime-local" id="exchangeTime" name="exchangeTime" required>
+
+    <label style="width: 100%; " for="orderNumber">Order Number:</label>
+    <input type="text" id="orderNumber" name="orderNumber" required>
+
+    <label style="width: 100%; " for="image">Upload Image:</label>
+    <input type="file" id="image" name="image" accept="image/*">
+
+    <button type="button" onclick="exchangeItem()">Exchange Item</button>
+</form>
+
+<div id="exchangeMessage"></div>
+</div>
+
+<script>
+function exchangeItem() {
+// Get values from form
+var itemName = document.getElementById("itemName").value;
+var quantity = document.getElementById("quantity").value;
+var reason = document.getElementById("reason").value;
+var exchangeTime = document.getElementById("exchangeTime").value;
+var orderNumber = document.getElementById("orderNumber").value;
+
+// Validation
+if (!itemName || !quantity || quantity <= 0 || !reason || !exchangeTime || !orderNumber) {
+    document.getElementById("exchangeMessage").innerText = "Please provide valid item details.";
+    return;
+}
+
+// Simulate exchange process (replace with actual logic)
+var message = `Exchanged ${quantity} ${itemName}(s) successfully. Reason: ${reason}.`;
+
+// Display exchange message
+document.getElementById("exchangeMessage").innerText = message;
+
+// Clear form fields
+document.getElementById("exchangeForm").reset();
+}
+
+</script>
+{% endblock %}

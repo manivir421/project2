@@ -1,0 +1,204 @@
+/*<!---
+#comp 3450 <Ashima,ripan>--> */
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+<style>
+    footer{
+    background-color: #00163d;
+    color: aliceblue;
+    padding: 30px;
+}
+footer a{
+    color: aliceblue;
+}
+footer a:hover{
+    color: aqua;
+}
+.section{
+    float: left;
+    margin-right: 100px;
+}
+.para{
+    font-family:Futura,sans-serif;
+    font-size: 14px;
+    word-spacing: 5px;
+    text-align: justify;
+    padding: 50px;
+}
+.section2{
+    float: left;
+}
+.a2{
+    margin-left: 357px;
+}
+.form1{
+    padding:10px;
+	width:20%;
+	background-color: rgba(255, 255, 255, 0.76);
+	outline: none;
+    border: 2px solid aqua;
+    margin-left: 260px;
+    color:black;
+    float: left;
+    margin-bottom: 30px;
+}
+.h{
+    margin-bottom: 80px;
+}
+input[type=submit],input[type=reset]{
+    margin-left: 670px;
+    width:10%;
+    padding: 5px;
+    cursor: pointer;
+    color: black;
+    background-color:white
+}
+input[type=radio]{
+    width: 2%;
+}
+.helo{
+    margin-left: 260px;
+    margin-top: 320px;
+}
+input[type=text]{
+    outline: none;
+    width:90%;
+    padding: 10px;
+}
+input[type=reset]:hover{
+    background-color:darksalmon
+}
+input[type=submit]:hover{
+    background-color:darksalmon;
+}
+.form2{
+    padding: 10px;
+    outline: none;
+    width: 10%;
+}
+
+</style>
+<footer>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-#305bab">
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link " aria-current="page" href="{% url 'help' %}">Help Center</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link " aria-current="page" href="{% url 'return.html' %}">Return</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'exchange' %}">Exchange</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'transaction_history' %}">Transaction History</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    <h1 id = "hk" style="color: tomato;"><center>Contact Us</center></h1>
+    <p class = "para">The contemporary Indian beauty expert - Lakmé continuously innovates to offer a wide range of high performance and world class cosmetics and skincare products that have earned recognition from the People for the Ethical Treatment of Animals (PETA). We, at Lakme, combine international cosmetic technology with an in-depth understanding of the Indian woman’s needs and offer a comprehensive beauty experience to our customers through products that are ideal for a variety of Indian skin tones. Lakmé was the country's first cosmetic brand to introduce makeup to Indian women and takes pride in being the expert on Indian Beauty for over 50 years. We also take immense pride in being a compassionate beauty brand which is why we do not believe in or support testing on animals. Our bond with beauty and fashion goes beyond skincare & makeup hence it is manifested through the renowned Lakmé Fashion Week,
+         which is now the largest fashion event of its kind in the country that celebrates the beauty of fashion.</p>
+   <div class="section">
+    <ul><li>
+        <h1>Visit Sites</h1>
+    </li><br>
+    <li>
+        <a href="https://www.instagram.com/">Instagram</a>
+    </li><br><hr><br>
+    <li>
+        <a href="https://www.facebook.com/">Facebook</a>
+    </li><br><hr><br>
+    <li>
+        <a href="https://twitter.com/login">Twitter</a>
+    </li>
+    </ul>
+    </div>
+    <ul class = "section">
+        <li><h1>
+            Visit Our Stores In 
+        </h1></li><br>
+        <li>Denmark</li><br>
+        <li>New Zeland</li><br>
+        <li>East Asia</li><br>
+    </ul>
+    <ul>
+        <li>
+            <h1>
+                NEED HELP..?
+            </h1>
+        </li><br>
+        <li>
+            Visit Us
+        </li><br>
+        <li>
+            <address>45-A Court Road <br><br>Amritsar</address><br>
+            
+        </li>
+       
+    </ul>
+    <hr>
+    <br>
+    <h1  class="h" style = "color: white;"><center style="font-size: 40px;margin-right: 410px;">Register Now</center></h1>
+   <form action="">
+
+    <div class="form1">
+        <label for="fname">Name:</label><br><br>
+    <input type="text"  placeholder="Name" >
+    </div>
+   <div class="form1">
+    <label for="fname">Age:</label><br><br>
+    <input type ="text" placeholder="Age"><br><!--- name="name"-->
+   </div>
+   <div class="form1">
+    <label for="fname">Email:</label><br><br>
+    <input type ="text" placeholder="Email"><br>
+   </div><br>
+   <div class="form1">
+    <label for="fname">Phone no:</label><br><br>
+    <input type ="text" placeholder="Phone no"><br>
+   </div><br>
+    <div class="form1">
+        <label for="fname">Qualification:</label><br><br>
+    <input type ="text" placeholder="Qualification"><br>
+    </div><br>
+    <div class="form1">
+        <label for="fname">Subject:</label><br><br>
+    <input type ="text" placeholder="Subject"><br>
+    </div><br>
+   <div class="helo">
+    <input type="radio" name="gender" value="male">Male
+    <input type="radio" name="gender" value="female">Female <br><br><br><br>
+    ATTACH YOUR RESUME<br><br>
+   <input type="file"><br><BR><BR><BR>
+    CHOOSE YOUR BIRTH DATE <br><br>
+   <input type="date"><br><br>
+   
+   </div>
+    <fieldset>
+        <legend>Enter Password</legend>
+        <div class="form2">
+            <label for="fname">Password</label><br><br>
+            <input type="password" ><br><br>
+            <label for="fname">Confirm Password</label><br><br>
+            <input type="password" >
+        </div>
+    </fieldset><br><br>
+    <select name="" id="">
+        <optgroup label="Status">
+            <option value="">Employeed</option>
+            <option value="">Unemployeed</option>
+        </optgroup>
+    </select><br><br><br>
+    <input type ="submit"><br><br>
+    <input type="reset">
+   </form>
+   </footer>
+   {% endblock %}

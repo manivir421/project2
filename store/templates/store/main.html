@@ -1,0 +1,197 @@
+/*<!---
+#comp 3450 <Ashima,ripan>--> */
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script type="text/javascript">
+        var user = '{{request.user}}'
+    </script>
+    <script type="text/javascript">
+      var user = '{{request.user}}'
+      function getToken(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getToken('csrftoken');
+    
+      function getCookie(name) {
+        var cookieArr = document.cookie.split(";");
+        for(var i = 0; i < cookieArr.length; i++) {
+            var cookiePair = cookieArr[i].split("=");
+            if(name == cookiePair[0].trim()) {
+              return decodeURIComponent(cookiePair[1]);
+            }
+        }
+        return null;
+    }
+    var cart = JSON.parse(getCookie('cart'))
+    if (cart == undefined){
+        cart = {}
+        console.log('Cart Created!', cart)
+        document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+    }
+    console.log('Cart :',cart)
+    </script>
+     <style>
+      .add-btn {
+        background-color: pink;
+        color: white;
+    }
+
+    .view-btn {
+        background-color: rgb(232, 125, 219);
+        color: white;
+    }
+
+    .navbar {
+        background-color: #305bab;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button onclick="toggleMode()">🌙 Dark Mode</button>
+    <button onclick="toggleContrast()">🔳 High Contrast</button>
+    <!-- Text to Speech Button -->
+    <button onclick="speakText()">🔊 Speak Text</button>
+  </header>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{% url 'store' %}"><b>CARTLOOPS</b></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div style="width: 500px;" class="search-bar">
+        <form action="{% url 'searchproduct' %}" method="POST">
+          {% csrf_token %}
+          <div class="input-group">
+            <input type="search" required class="form-control" name="productsearch" id="searchproducts" placeholder="Search Product.. ">
+            <button type="submit" class="input-group-text">Search</button>  
+            <button id="captureButton" class="btn btn-primary"><i class="fa fa-camera"></i></button>
+            <button id="voice-search-btn" class="speechtooText" onclick="record()">🎙️</button>
+          </div>
+        </form>
+      </div>
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          {% for category in categories %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{category.get_absolute_url}}">{{category.name}}</a>
+          </li>
+          {% endfor %} 
+        </ul>
+        <form class="d-flex">
+          {% if user.is_authenticated %}
+              <a style="color: white;"  href="{% url 'wishlist' %}" class="btn  mx-2"><i style="color: red;" class="fa fa-heart"></i>
+              </a>
+              <a   style="color: white;"  href="{% url 'logout' %}" class="btn  mx-2">LogOut</a>
+              <img id="profile-image" src="{% static 'images/un.jpg' %}" width="50px" alt="User Profile Image">
+          {% else %}
+            <a style="color: white;"  href="{% url 'signup' %}" class="btn  mx-2">Register</a>
+            <a style="color: white;"  href="{% url 'login' %}" class="btn  mx-2">Login</a>
+          {% endif %}
+          <a href="{% url 'cart' %}">
+            <img  id="cart-icon" src="{% static 'images/cart.png' %}">
+          </a>
+          <p id="cart-total">{{cartItems}}</p>
+        </form>
+      </div>
+    </div>
+  </nav>
+  <img src="{% static 'images/img1.png' %}" alt="whatsapp logo" width="2000px  height=100px ">
+  
+  <nav>
+    <a class="nav-link" href="{% url 'voice_chatbot' %}">Voice Chatbot</a>
+  </nav>
+
+  <a style="text-decoration: none; color: black; font-size: 30px;" href="https://wa.me/+919478346901?text=I'm%20interested%20in%20your%20designs%20for%20buying">
+    CHAT WITH US 
+  </a>
+ 
+  
+  {% block content %}
+  {% endblock %}
+  
+  <script>
+    // Text-to-Speech functionality
+    function speakText() {
+      const text = document.body.innerText; // Capture the entire page text
+      const utterance = new SpeechSynthesisUtterance(text); // Create an utterance with the captured text
+      speechSynthesis.speak(utterance); // Speak the text
+    }
+
+    // Location-based functionality and existing code
+    function getUserLocation() {
+      if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition);
+      } else {
+          document.getElementById("location").innerHTML = "Geolocation is not supported by this browser.";
+      }
+    }
+
+    function showPosition(position) {
+      const latitudeInput = document.getElementById("latitude");
+      const longitudeInput = document.getElementById("longitude");
+
+      latitudeInput.value = position.coords.latitude;
+      longitudeInput.value = position.coords.longitude;
+
+      const locationText = `Latitude: ${latitudeInput.value}, Longitude: ${longitudeInput.value}`;
+      document.getElementById("location").innerHTML = locationText;
+    }
+
+    // Call the function to get user's location when the page loads
+    getUserLocation();
+  </script>
+
+  <script>
+    // Function to toggle Dark Mode
+    function toggleMode() {
+      document.body.classList.remove("light-mode", "high-contrast");
+      document.body.classList.toggle("dark-mode");
+      let mode = document.body.classList.contains("dark-mode") ? "dark-mode" : "light-mode";
+      localStorage.setItem("mode", mode);
+    }
+
+    // Function to toggle High Contrast Mode
+    function toggleContrast() {
+      document.body.classList.remove("light-mode", "dark-mode");
+      document.body.classList.toggle("high-contrast");
+      let mode = document.body.classList.contains("high-contrast") ? "high-contrast" : "light-mode";
+      localStorage.setItem("mode", mode);
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      let mode = localStorage.getItem("mode");
+      if (mode) {
+        document.body.classList.remove("light-mode", "dark-mode", "high-contrast");
+        document.body.classList.add(mode);
+      }
+    });
+  </script>
+</body>
+</html>

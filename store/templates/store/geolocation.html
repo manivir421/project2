@@ -1,0 +1,46 @@
+/*<!---
+#comp 3450 <Ashima,ripan>--> */
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+<h1>Your Location</h1>
+<p id="location"></p>
+
+<form method="post" action="{% url 'geolocation' %}">
+    {% csrf_token %}
+    <input type="hidden" id="latitude" name="latitude">
+    <input type="hidden" id="longitude" name="longitude">
+    
+</form>
+
+{% if formatted_address %}
+    <p>Formatted Address: {{ formatted_address }}</p>
+{% endif %}
+
+<script>
+    // Function to get user's location
+    function getUserLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            document.getElementById("location").innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+
+    // Function to display the user's location
+    function showPosition(position) {
+        const latitudeInput = document.getElementById("latitude");
+        const longitudeInput = document.getElementById("longitude");
+
+        latitudeInput.value = position.coords.latitude;
+        longitudeInput.value = position.coords.longitude;
+
+        const locationText = `Latitude: ${latitudeInput.value}, Longitude: ${longitudeInput.value}`;
+        document.getElementById("location").innerHTML = locationText;
+    }
+
+    // Call the function to get user's location when the page loads
+    getUserLocation();
+</script>
+
+{% endblock %}

@@ -1,0 +1,61 @@
+/*<!---
+#comp 3450 <Ashima,ripan>--> */
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+
+<div class="containerr">
+    <h1>Community Discussion Forum</h1>
+    <div id="discussion-container">
+        <!-- Discussion threads will be appended here dynamically -->
+    </div>
+    <div id="new-post-form">
+        <h2>Create a New Post</h2>
+        <input type="text" id="post-author" placeholder="Your Name">
+        <textarea id="post-content" placeholder="Write your post..."></textarea>
+        <button onclick="addNewPost()">Post</button>
+    </div>
+</div>
+<script >
+    // Mock data for initial threads
+const discussionThreads = [
+    { author: "John Doe", content: "This is the first post!" },
+    { author: "Alice", content: "Great forum!" },
+];
+
+// Function to display posts on the page
+function displayPosts() {
+    const discussionContainer = document.getElementById("discussion-container");
+    discussionContainer.innerHTML = ""; // Clear previous content
+
+    discussionThreads.forEach((thread, index) => {
+        const postElement = document.createElement("div");
+        postElement.className = "post";
+        postElement.innerHTML = `<strong>${thread.author}:</strong> ${thread.content}`;
+        discussionContainer.appendChild(postElement);
+    });
+}
+
+// Function to add a new post
+function addNewPost() {
+    const authorInput = document.getElementById("post-author");
+    const contentInput = document.getElementById("post-content");
+
+    const newPost = {
+        author: authorInput.value,
+        content: contentInput.value,
+    };
+
+    discussionThreads.push(newPost);
+    displayPosts();
+
+    // Clear input fields
+    authorInput.value = "";
+    contentInput.value = "";
+}
+
+// Initial display of posts
+displayPosts();
+
+</script>
+{% endblock %}
