@@ -1,3 +1,10 @@
+import os
+import django
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ecom.settings")
+django.setup()
+
+
 from django.test import TestCase
 from store.models import Product, Order
 from store.recommendation_system import recommend_related_products
