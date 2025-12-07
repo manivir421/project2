@@ -1,12 +1,12 @@
 import os
 import django
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ecom.settings")
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ecom.settings")  
 django.setup()
 
-
 from django.test import TestCase
-from store.models import Product, Order
+from store.models import Product, Order, Category  
 from store.recommendation_system import recommend_related_products
 
 class TestRecommendationSystem(TestCase):
@@ -31,17 +31,17 @@ class TestRecommendationSystem(TestCase):
         Order.objects.create(product=self.product2)
 
     def test_recommend_related_products_basic(self):
-        """Test that related products are recommended correctly."""
+        #Test that related products are recommended correctly.
         related = recommend_related_products(self.product1.id)
         self.assertIn(self.product2, related)
         self.assertNotIn(self.product1, related)
 
     def test_recommend_related_products_no_orders(self):
-        """Test a product with no orders returns empty recommendations."""
+        #Test a product with no orders returns empty recommendations.
         related = recommend_related_products(self.product3.id)
         self.assertEqual(list(related), [])
 
     def test_recommend_related_products_top_n(self):
-        """Test that top_n parameter limits the number of recommendations."""
+        #Test that top_n parameter limits the number of recommendations.
         related = recommend_related_products(self.product1.id, top_n=1)
         self.assertEqual(len(related), 1)
