@@ -13,9 +13,9 @@ class TestRecommendationSystem(TestCase):
 
     def setUp(self):
 
-        self.product1 = Product.objects.create(name="Product 1")
-        self.product2 = Product.objects.create(name="Product 2")
-        self.product3 = Product.objects.create(name="Product 3")
+        self.product1 = Product.objects.create(name="Product 1", price=10.0)
+        self.product2 = Product.objects.create(name="Product 2", price=20.0)
+        self.product3 = Product.objects.create(name="Product 3", price=30.0)
 
   
         Order.objects.create(product=self.product1)
