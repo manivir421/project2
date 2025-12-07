@@ -1,8 +1,15 @@
-from unittest.mock import patch, MagicMock
+import os
+import django
+
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ecom.settings")
+django.setup()
+
+
 from django.test import TestCase
 from store.models import Product, Category
 from store.recommendation_system import recommend_related_products
-
+from unittest.mock import patch, MagicMock
 class TestRecommendationSystem(TestCase):
 
     def setUp(self):
