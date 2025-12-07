@@ -6,16 +6,17 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ecom.settings")
 django.setup()
 
 from django.test import TestCase
+from django.contrib.auth.models import User  
 from store.models import Product, Order, Category  
 from store.recommendation_system import recommend_related_products
 
 class TestRecommendationSystem(TestCase):
 
     def setUp(self):
-        # Create a default category
+   
         self.category = Category.objects.create(name="Default Category")
 
-        # Create products with required fields
+ 
         self.product1 = Product.objects.create(
             name="Product 1", price=10.0, category=self.category
         )
@@ -26,9 +27,13 @@ class TestRecommendationSystem(TestCase):
             name="Product 3", price=30.0, category=self.category
         )
 
-        # Create orders for recommendation
-        Order.objects.create(product=self.product1)
-        Order.objects.create(product=self.product2)
+       
+        self.user = User.objects.create(username="testuser")
+
+        Order.objects.create(product=self.product1, user=self.user)   
+        Order.objects.create(product=self.product2, user=self.user)   
+
+ 
 
     def test_recommend_related_products_basic(self):
         #Test that related products are recommended correctly.
