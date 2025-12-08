@@ -1,22 +1,22 @@
 
-#comp 3450 <Ashima,ripan>--> */
-# shop/recommendation_system.py
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
-from .models import Product, Order
 
-# Example: Recommend products that are commonly bought with the current product
+
+from .models import Product, OrderItem
+
 def recommend_related_products(product_id, top_n=5):
-    # Get all orders where the product was bought
-    orders = Order.objects.filter(product_id=product_id)
+    # Get all OrderItems for the given product
+    order_items = OrderItem.objects.filter(product_id=product_id)
 
-    # Get the product ids of all other products purchased in the same orders
-    other_product_ids = [order.product.id for order in orders]
+    # Collect all other products bought in the same orders
+    related_products = []
+    for item in order_items:
+        other_items = item.order.orderitem_set.exclude(product_id=product_id)
+        for other in other_items:
+            related_products.append(other.product)
 
-    # Exclude the current product from the list
-    other_product_ids = [pid for pid in other_product_ids if pid != product_id]
+    # Remove duplicates while preserving order
+    related_products = list(dict.fromkeys(related_products))
 
-    # Get the top N related products (this is basic collaborative filtering)
-    related_products = Product.objects.filter(id__in=other_product_ids).distinct()[:top_n]
-
-    return related_products
+    return related_products[:top_n]
