@@ -21,16 +21,20 @@ class TestRecommendationSystem(TestCase):
         self.product2 = Product.objects.create(name="Product 2", price=20.0, category=self.category)
         self.product3 = Product.objects.create(name="Product 3", price=30.0, category=self.category)
 
-    @patch("store.recommendation_system.OrderItem.objects.filter")  
+    @patch("store.recommendation_system.OrderItem.objects.filter")
     def test_recommend_related_products_basic(self, mock_filter):
-        # Mock order item so that product2 appears as related to product1
         mock_order_item = MagicMock()
-        mock_order_item.order.orderitem_set.exclude.return_value = [self.product2]
+    
+    # Create a mock OrderItem for the related product
+        mock_other = MagicMock()
+        mock_other.product = self.product2
+    
+        mock_order_item.order.orderitem_set.exclude.return_value = [mock_other]
         mock_filter.return_value = [mock_order_item]
 
         related = recommend_related_products(self.product1.id)
         self.assertIn(self.product2, related)
-        self.assertNotIn(self.product1, related)
+        self.assertNotIn(self.product1, related)   
 
     @patch("store.recommendation_system.OrderItem.objects.filter")
     def test_recommend_related_products_no_orders(self, mock_filter):
@@ -41,9 +45,16 @@ class TestRecommendationSystem(TestCase):
 
     @patch("store.recommendation_system.OrderItem.objects.filter")
     def test_recommend_related_products_top_n(self, mock_filter):
-        # Simulate multiple related products
         mock_order_item = MagicMock()
-        mock_order_item.order.orderitem_set.exclude.return_value = [self.product2, self.product3]
+
+    # Create mock OrderItems for the other products
+        mock_other1 = MagicMock()
+        mock_other1.product = self.product2
+
+        mock_other2 = MagicMock()
+        mock_other2.product = self.product3
+
+        mock_order_item.order.orderitem_set.exclude.return_value = [mock_other1, mock_other2]
         mock_filter.return_value = [mock_order_item]
 
         related = recommend_related_products(self.product1.id, top_n=1)
